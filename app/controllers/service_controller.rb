@@ -3,6 +3,8 @@ require 'mcollective'
 include MCollective::RPC
 
 class ServiceController < ApplicationController
+    http_basic_authenticate_with :name => "cloudways-dev-api", :password => "cloudways123+"
+
     def status
         response = {:status => 0, :msg => ""}
         service_name = params[:service_name]
