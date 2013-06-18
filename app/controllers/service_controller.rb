@@ -2,14 +2,12 @@
 require 'mcollective'
 include MCollective::RPC
 
-include ServiceHelper
-
 class ServiceController < ApplicationController
     http_basic_authenticate_with :name => "cloudways-dev-api", :password => "cloudways123+"
     before_filter :init
 
     def init 
-        @params_verifier = ParamsVerifier.new()
+        @params_verifier = ServiceHelper::ParamsVerifier.new()
         @service_name = nil
         @customer_number = nil
         @response = {:status => 0, :msg => ""}
@@ -65,7 +63,8 @@ class ServiceController < ApplicationController
                 rpc_client.fact_filter "cloudways_customer", @customer_number
             end
             rpc_response = rpc_client.status(:service => @service_name)
-            @response = rpc_response
+            @response[:status] = 0
+            @response[:response] = rpc_response
         rescue Exception => e
             @response[:status] = -2
             @response[:msg] = "Server error: #{e}"
@@ -88,7 +87,8 @@ class ServiceController < ApplicationController
                 rpc_client.fact_filter "cloudways_customer", @customer_number
             end
             rpc_response = rpc_client.start(:service => @service_name)
-            @response = rpc_response
+            @response[:status] = 0
+            @response[:response] = rpc_response
         rescue Exception => e
             @response[:status] = -2
             @response[:msg] = "API error: #{e}"
@@ -110,7 +110,8 @@ class ServiceController < ApplicationController
                 rpc_client.fact_filter "cloudways_customer", @customer_number
             end
             rpc_response = rpc_client.stop(:service => @service_name)
-            @response = rpc_response
+            @response[:status] = 0
+            @response[:response] = rpc_response
         rescue Exception => e
             @response[:status] = -2
             @response[:msg] = "API error: #{e}"
@@ -132,7 +133,8 @@ class ServiceController < ApplicationController
                 rpc_client.fact_filter "cloudways_customer", @customer_number
             end
             rpc_response = rpc_client.restart(:service => @service_name)
-            @response = rpc_response
+            @response[:status] = 0
+            @response[:response] = rpc_response
         rescue Exception => e
             @response[:status] = -2
             @response[:msg] = "API error: #{e}"
